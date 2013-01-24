@@ -67,6 +67,17 @@
 
 #sidebar {
     padding: 5px;
+    position: relative;
+}
+
+#sidebar:after {
+    content: ' ';
+    position: absolute;
+    width: 140px;
+    bottom: 0;
+    height: 66px;
+    background-image: -webkit-linear-gradient(top, rgba(255,255,255, 0), rgba(255,255,255, 1));
+    border-bottom: 10px solid #fff;
 }
 
 #sidebar .item {
