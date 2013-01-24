@@ -12,6 +12,10 @@ addEvent('send-button', 'click', function() {
     }
 });
 
+addEvent('like-button', 'click', function() {
+    new Notification(1, Notification.LIKE);
+});
+
 var Notification = function(user, type, message) {
     var t = this;
 
@@ -54,6 +58,7 @@ Notification.prototype.show = function() {
 
 Notification.prototype.makeMessageNotification = function() {
     var t = this;
+    t.isFocused = false;
     t.el.innerHTML =
         '<div class="history">' +
             '<div class="message">' +
@@ -61,7 +66,7 @@ Notification.prototype.makeMessageNotification = function() {
                     '<img src="http://cs10308.userapi.com/u4718705/e_be62b8f2.jpg" />' +
                 '</div>' +
                 '<div class="text">' +
-                    t.message.replace('\n', '<br>') +
+                    t.message.replace(/\n/g, '<br>') +
                 '</div>' +
             '</div>' +
         '</div>' +
@@ -78,10 +83,12 @@ Notification.prototype.makeMessageNotification = function() {
     var textarea = t.el.childNodes[1].childNodes[1].childNodes[0];
     var history = t.el.childNodes[0];
     addEvent(textarea, 'focus', function() {
+        t.isFocused = true;
         addClass(t.el, 'active');
         t.clearHideTimeout();
     });
     addEvent(textarea, 'blur', function() {
+        t.isFocused = false;
         var text = trim(textarea.value);
         if (!text) {
             removeClass(t.el, 'active');
@@ -90,6 +97,15 @@ Notification.prototype.makeMessageNotification = function() {
     });
     addEvent(t.el, 'click', function() {
         textarea.focus();
+    });
+    addEvent(t.el, 'mouseover', function(e) {
+        t.clearHideTimeout();
+    });
+    addEvent(t.el, 'mouseout', function(e) {
+        var text = trim(textarea.value);
+        if (!text && !t.isFocused) {
+            t.setHideTimeout();
+        }
     });
     addEvent(textarea, 'keyup', function(e) {
         var text = trim(textarea.value);
@@ -101,7 +117,7 @@ Notification.prototype.makeMessageNotification = function() {
                     '<img src="http://cs10308.userapi.com/u4718705/e_be62b8f2.jpg" />' +
                 '</div>' +
                 '<div class="text">' +
-                    text.replace('\n', '<br>') +
+                    text.replace(/\n/g, '<br>') +
                 '</div>' +
             '';
             history.appendChild(message);
@@ -114,23 +130,33 @@ Notification.prototype.makeMessageNotification = function() {
             t.hide();
         }
     });
-    //textarea.focus();
+    t.setHideTimeout();
 };
 
 Notification.prototype.makeLikeNotification = function() {
     var t = this;
+    t.el.innerHTML =
+        '<div class="history">' +
+            '<div class="message">' +
+                '<div class="photo">' +
+                    '<img src="http://cs10308.userapi.com/u4718705/e_be62b8f2.jpg" />' +
+                '</div>' +
+                '<div class="text">' +
+                    'Вам постравили лайк' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+    '';
+
+    addClass(t.el, 'like');
     addEvent(t.el, 'click', function() {
         t.hide();
     });
     addEvent(t.el, 'mouseover', function(e) {
-        if (e.target == e.currentTarget) {
-            t.clearHideTimeout();
-        }
+        t.clearHideTimeout();
     });
     addEvent(t.el, 'mouseout', function(e) {
-        if (e.target == e.currentTarget) {
-            t.setHideTimeout();
-        }
+        t.setHideTimeout();
     });
     t.setHideTimeout();
 };

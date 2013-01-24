@@ -60,6 +60,10 @@ textarea:-moz-placeholder {
 .clear-fix {
     display: block;
 }
+.button-blue +
+.button-blue {
+    margin-left: 10px;
+}
 .button-blue {
     position: relative;
     display: inline-block;
