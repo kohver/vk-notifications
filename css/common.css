@@ -26,6 +26,13 @@ form {
 small {
     font-size: 10px;
 }
+label {
+    display: inline-block;
+}
+label > * {
+    vertical-align: middle;
+    padding: 3px;
+}
 input.text,
 input.search,
 textarea,
@@ -61,28 +68,31 @@ textarea:-moz-placeholder {
 .clear-fix {
     display: block;
 }
-.button-blue +
-.button-blue {
-    margin-left: 10px;
-}
-.button-blue {
+.button {
     position: relative;
     display: inline-block;
+    font-family: tahoma, verdana, arial, Lucida Sans, serif;
     font-size: 11px;
     padding: 0.5em 1.3em 0.6em;
     margin: 0;
     cursor: pointer;
     outline: none;
     white-space: nowrap;
-    font-family: tahoma, verdana, arial, Lucida Sans, serif;
+    border-radius: 0.2em;
+    border: 0.1em solid;
+}
+.button +
+.button {
+    margin-left: 10px;
+}
+.button-blue {
     color: #fff;
-    border: 0.1em solid #4E6F93;
+    border-color: #4E6F93;
     border-top-color: #517295;
     box-shadow: 0 0.1em 0.1em rgba(255, 255, 255, 0.2) inset;
     text-shadow: 0 0.1em 0 #45688E;
     -webkit-border-radius: 0.2em;
     -moz-border-radius: 0.2em;
-    border-radius: 0.2em;
     background-color: #6a8db2;
     background-image: -webkit-linear-gradient(top, #6a8db2, #50769e);
     background-image: -moz-linear-gradient(top, #6a8db2, #50769e);
@@ -104,6 +114,34 @@ textarea:-moz-placeholder {
     box-shadow: none;
     background: #5E80A5;
 }
+.button-white {
+    color: #444;
+    border-color: #B3B3B3;
+    box-shadow: 0 0.1em 0.1em #ffffff inset;
+    text-shadow: 0 0.1em 0 #fff;
+    background-color: #fafafa;
+    background-image: -webkit-linear-gradient(top, #fafafa, #d4d4d4);
+    background-image: -moz-linear-gradient(top, #fafafa, #d4d4d4);
+    background-image: -ms-linear-gradient(top, #fafafa, #d4d4d4);
+    background-image: -o-linear-gradient(top, #fafafa, #d4d4d4);
+    background-image: linear-gradient(top, #fafafa, #d4d4d4);
+}
+.button-white:hover,
+.button-white:focus {
+    text-decoration: none;
+    background-color: #ffffff;
+    background-image: -webkit-linear-gradient(top, #ffffff, #e5e5e5);
+    background-image: -moz-linear-gradient(top, #ffffff, #e5e5e5);
+    background-image: -ms-linear-gradient(top, #ffffff, #e5e5e5);
+    background-image: -o-linear-gradient(top, #ffffff, #e5e5e5);
+    background-image: linear-gradient(top, #ffffff, #e5e5e5);
+}
+.button-white:active {
+    box-shadow: none;
+    background: #dcdcdc;
+    text-shadow: 0 .1em 0 #eee;
+}
+
 .textarea-wrap {
     margin-right: 10px;
 }

@@ -5,7 +5,8 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link type="text/css" rel="stylesheet" href="/css/common.css"/>
     <link type="text/css" rel="stylesheet" href="/css/main.css"/>
-    <title>VK Notifications</title>
+    <link rel="shortcut icon" href="http://vk.com/images/favicon_vk.ico" />
+    <title>Notifications</title>
 </head>
 <body>
     <div id="main" class="clear-fix">
@@ -27,6 +28,12 @@
         <div id="right-column">
             <div id="content">
                 <div class="header">Концепт уведомлений</div>
+                <div id="description">
+                    Перед Вами воплощенная идея новых уведомлений VK. Чтобы попробовать увидеть их в действии, введите свое сообщение в текстовом поле и отправьте.<br><br>
+                    Основная идея -- объединение нескольких событий в одно уведомление. Мои друзья любят отправлять несколько коротких сообщений подряд, что делает просто невозможным их прочтение в том виде, который сейчас в VK. Здесь же эта проблема решена легко и изящно. Давайте же, попробуйте начать переписку! :)<br><br>
+                    Приятная фишка -- возможность ответить на входящие сообщение, просто нажав на уведомление. Не надо отвлекаться ни на что!<br><br>
+                    Настоятельно рекомендуется использовать последний Google Chrome, так как вся анимация и функциональность тестировались именно в нем. Весь код доступен на <a href="https://github.com/kohver/vk-notifications" target="_blank">GitHub</a>.
+                </div>
                 <div id="form">
                     <div class="textarea-bg">
                         <div class="textarea-wrap">
@@ -34,12 +41,16 @@
                         </div>
                     </div>
                     <div class="actions">
-                        <button id="send-button" class="button-blue">
+                        <button id="send-button" class="button button-blue">
                             Отправить сообщение
                         </button>
-                        <button id="like-button" class="button-blue">
+                        <button id="like-button" class="button button-white">
                             Отправить лайк
                         </button>
+                        <label for="checkbox">
+                            <input type="checkbox" id="checkbox" />
+                            <span>Новый пользователь</span>
+                        </label>
                     </div>
                 </div>
             </div>
