@@ -5,7 +5,7 @@ addEvent('send-button', 'click', function() {
     var text = trim(textarea.value);
     if (text) {
         textarea.value = '';
-        var notification = new Notification(1, Notification.MESSAGE, text);
+        new Notification(1, Notification.MESSAGE, text);
         textarea.focus();
     } else {
         textarea.focus();
@@ -78,10 +78,12 @@ Notification.prototype.makeMessageNotification = function() {
                 '<textarea placeholder="Ответить..."></textarea>' +
             '</div>' +
         '</div>' +
+        '<div class="close"></div>' +
     '';
 
     var textarea = t.el.childNodes[1].childNodes[1].childNodes[0];
     var history = t.el.childNodes[0];
+    var closeButton = t.el.childNodes[2];
     addEvent(textarea, 'focus', function() {
         t.isFocused = true;
         addClass(t.el, 'active');
@@ -130,6 +132,10 @@ Notification.prototype.makeMessageNotification = function() {
             t.hide();
         }
     });
+    addEvent(closeButton, 'mousedown', function(e) {
+        t.hide();
+        e.stopPropagation();
+    });
     t.setHideTimeout();
 };
 
@@ -146,17 +152,20 @@ Notification.prototype.makeLikeNotification = function() {
                 '</div>' +
             '</div>' +
         '</div>' +
+        '<div class="close"></div>' +
     '';
 
+    var closeButton = t.el.childNodes[1];
     addClass(t.el, 'like');
-    addEvent(t.el, 'click', function() {
-        t.hide();
-    });
     addEvent(t.el, 'mouseover', function(e) {
         t.clearHideTimeout();
     });
     addEvent(t.el, 'mouseout', function(e) {
         t.setHideTimeout();
+    });
+    addEvent(closeButton, 'mousedown', function(e) {
+        t.hide();
+        e.stopPropagation();
     });
     t.setHideTimeout();
 };

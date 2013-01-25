@@ -36,6 +36,7 @@ input.big_text {
     padding: 4px;
     margin: 0;
     font-size: 12px;
+    font-family: tahoma, arial, verdana, Lucida Sans, sans-serif;
 }
 textarea:focus {
     outline: none;
@@ -109,4 +110,11 @@ textarea:-moz-placeholder {
 .textarea-wrap textarea {
     width: 100%;
     vertical-align: middle;
+}
+
+.header {
+    background-color: #DEE5EB;
+    color: #607387;
+    padding: 10px 15px;
+    font-weight: bold;
 }
