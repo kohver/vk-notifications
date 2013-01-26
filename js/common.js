@@ -120,6 +120,6 @@ function removeClass(obj, name) {
 function simpleTemplate(template, object) {
     object = object || {};
     return '' + template.replace(/{{\w+}}/g, function(prop) {
-        return object[prop.split('{').join('').split('}').join('')] || {};
+        return object[prop.split('{').join('').split('}').join('')] || '';
     });
 }
