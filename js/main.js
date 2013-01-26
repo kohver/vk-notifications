@@ -134,9 +134,11 @@ var Notification = Class.extend({
         t.id = ++Notification.lastId;
         t.options = options || {};
         t.isHidden = true;
-        t.el = ce('div');
-        t.el.className = Notification.className;
-        t.el.style.zIndex = t.id;
+        t.el = ce('div', {
+            className: Notification.className
+        }, {
+            zIndex: t.id
+        });
 
         Notification.collection[t.id] = t;
         t.show();
@@ -233,8 +235,8 @@ var MessageNotification = Notification.extend({
             '<div class="close"></div>' +
             '';
 
-        var textarea = t.el.childNodes[1].childNodes[1].childNodes[0];
-        var closeButton = t.el.childNodes[2];
+        var textarea = geBySelector('textarea', t.el);
+        var closeButton = geBySelector('.close', t.el);
 
         addEvent(window, 'focus', function() {
             var text = trim(textarea.value);
@@ -294,19 +296,21 @@ var MessageNotification = Notification.extend({
         }
 
         var t = this;
-        var history = t.el.childNodes[0];
-        var messageElement = ce('div');
-        messageElement.className = 'message';
-        messageElement.innerHTML =
+        var history = geBySelector('.history', t.el);
+        var messageElement = ce('div', {
+            className: 'message',
+            innerHTML:
             '<div class="photo" title="' + message.user.name + '">' +
                 '<img src="' + message.user.photo + '" />' +
             '</div>' +
             '<div class="text">' +
                 message.text.replace(/\n/g, '<br>') +
             '</div>' +
-            '';
+            ''
+        }, {
+            marginBottom: -40 + 'px'
+        });
         history.appendChild(messageElement);
-        messageElement.style.marginBottom = -40 + 'px';
         setTimeout(function() {
             messageElement.style.marginBottom = 0;
         }, 0);
@@ -345,7 +349,7 @@ var LikeNotification = Notification.extend({
             '<div class="close"></div>' +
             '';
 
-        var closeButton = t.el.childNodes[1];
+        var closeButton = geBySelector('.close', t.el);
         addClass(t.el, 'like');
         addEvent(t.el, 'mouseover', function(e) {
             t.clearHideTimeout();
@@ -362,16 +366,18 @@ var LikeNotification = Notification.extend({
 
     addLike: function() {
         var t = this;
-        var history = t.el.childNodes[0];
-        var messageElement = ce('div');
-        messageElement.className = 'message text-only';
-        messageElement.innerHTML =
+        var history = geBySelector('.history', t.el);
+        var messageElement = ce('div', {
+            className: 'message text-only',
+            innerHTML:
             '<div class="text">' +
                 'Поставил еще лайк' +
             '</div>' +
-            '';
+            ''
+        }, {
+            marginBottom: -25 + 'px'
+        });
         history.appendChild(messageElement);
-        messageElement.style.marginBottom = -25 + 'px';
         setTimeout(function() {
             messageElement.style.marginBottom = 0;
         }, 0);

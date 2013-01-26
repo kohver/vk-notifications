@@ -2,12 +2,15 @@ function ge(elementId) {
     return (typeof elementId == 'string') ? document.getElementById(elementId) : elementId;
 }
 
-function geByName(elementName) {
-    return document.getElementsByTagName(elementName);
+function geBySelector(selector, node) {
+    return node ? ge(node).querySelector(selector) : document.querySelector(selector);
 }
 
-function ce(tagName) {
-    return document.createElement(tagName);
+function ce(tag, attr, style) {
+    var el = document.createElement(tag);
+    if (attr) extend(el, attr);
+    if (style) extend(el.style, style);
+    return el;
 }
 
 function countObj(obj) {
@@ -20,6 +23,19 @@ function countObj(obj) {
         }
     }
     return count;
+}
+
+function extend() {
+    var args = Array.prototype.slice.call(arguments), obj = args.shift();
+    if (!args.length) {
+        return obj;
+    }
+    for (var i = 0, l = args.length; i < l; i++) {
+        for (var key in args[i]) {
+            obj[key] = args[i][key];
+        }
+    }
+    return obj;
 }
 
 function trim(text) {
