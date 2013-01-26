@@ -17,8 +17,6 @@ var User = Class.extend({
  */
 var Message = Class.extend({
     init: function(options) {
-        var t = this;
-
         if (typeof options != 'object') {
             throw new TypeError('Invalid options');
         }
@@ -27,6 +25,7 @@ var Message = Class.extend({
             throw new TypeError('Invalid user');
         }
 
+        var t = this;
         t.text = options.text + '';
         t.user = options.user;
     }
@@ -45,6 +44,7 @@ var Message = Class.extend({
     });
 
     var lastMessageNotification;
+    var lastLikeNotification;
     var user;
     var textarea = ge('textarea');
     var checkbox = ge('checkbox');
@@ -52,19 +52,41 @@ var Message = Class.extend({
 
     addEvent(textarea, 'keyup', function(e) {
         if (e.keyCode == KEY.ENTER && (e.ctrlKey || e.metaKey)) {
-            sendNotification();
+            sendMessageNotification();
         }
     });
     addEvent('send-button', 'click', function() {
-        sendNotification();
+        sendMessageNotification();
     });
     addEvent('like-button', 'click', function() {
-        new LikeNotification({
-            user: defaultUser
-        });
+        sendLikeNotification();
     });
 
-    function sendNotification() {
+    function sendLikeNotification() {
+        var isNewUser = !!checkbox.checked;
+        if (isNewUser) {
+            user = new User({
+                id: Math.random(),
+                name: 'Случайный Пользователь',
+                photo: 'http://vk.com/images/camera_c.gif'
+            });
+        } else {
+            user = defaultUser;
+        }
+
+        if (lastLikeNotification &&
+            !lastLikeNotification.isHidden &&
+            user.id == lastLikeNotification.options.user.id)
+        {
+            lastLikeNotification.addLike();
+        } else {
+            lastLikeNotification = new LikeNotification({
+                user: user
+            });
+        }
+    }
+
+    function sendMessageNotification() {
         var text = trim(textarea.value);
         var isNewUser = !!checkbox.checked;
         if (isNewUser) {
@@ -88,8 +110,6 @@ var Message = Class.extend({
                 message.user.id == lastMessageNotification.options.message.user.id)
             {
                 lastMessageNotification.addMessage(message);
-                lastMessageNotification.clearHideTimeout();
-                lastMessageNotification.setHideTimeout();
             } else {
                 lastMessageNotification = new MessageNotification({
                     message: message
@@ -164,8 +184,7 @@ var Notification = Class.extend({
         }, Notification.delay);
     },
 
-    makeElement: function() {},
-    addMessage: function() {}
+    makeElement: function() {}
 });
 
 Notification.lastId = 0;
@@ -198,6 +217,7 @@ var MessageNotification = Notification.extend({
                         '<img src="' + message.user.photo + '" />' +
                     '</div>' +
                     '<div class="text">' +
+                        '<b>' + message.user.name + '</b><br>' +
                         message.text.replace(/\n/g, '<br>') +
                     '</div>' +
                 '</div>' +
@@ -269,6 +289,10 @@ var MessageNotification = Notification.extend({
     },
 
     addMessage: function(message) {
+        if (!(message instanceof Message)) {
+            throw new TypeError('Invalid message');
+        }
+
         var t = this;
         var history = t.el.childNodes[0];
         var messageElement = ce('div');
@@ -286,6 +310,9 @@ var MessageNotification = Notification.extend({
         setTimeout(function() {
             messageElement.style.marginBottom = 0;
         }, 0);
+
+        t.clearHideTimeout();
+        t.setHideTimeout();
     }
 });
 
@@ -310,7 +337,8 @@ var LikeNotification = Notification.extend({
                         '<img src="' + user.photo + '" />' +
                     '</div>' +
                     '<div class="text">' +
-                        'Вам постравили лайк' +
+                        '<b>' + user.name + '</b><br>' +
+                        'постравил Вам лайк' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -329,6 +357,26 @@ var LikeNotification = Notification.extend({
             t.hide();
             e.stopPropagation();
         });
+        t.setHideTimeout();
+    },
+
+    addLike: function() {
+        var t = this;
+        var history = t.el.childNodes[0];
+        var messageElement = ce('div');
+        messageElement.className = 'message text-only';
+        messageElement.innerHTML =
+            '<div class="text">' +
+                'Поставил еще лайк' +
+            '</div>' +
+            '';
+        history.appendChild(messageElement);
+        messageElement.style.marginBottom = -25 + 'px';
+        setTimeout(function() {
+            messageElement.style.marginBottom = 0;
+        }, 0);
+
+        t.clearHideTimeout();
         t.setHideTimeout();
     }
 });

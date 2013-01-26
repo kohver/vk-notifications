@@ -110,7 +110,7 @@ label {
     position: fixed;
     left: 10px;
     bottom: 10px;
-    width: 300px;
+    width: 250px;
 }
 .notification +
 .notification {
@@ -175,6 +175,7 @@ label {
     -moz-transition: all 0.2s;
     position: relative;
     min-height: 30px;
+    line-height: 150%;
 }
 .notification .message .text {
     margin-left: 50px;
@@ -267,4 +268,8 @@ label {
 
 .notification.like {
     margin-bottom: -60px;
+}
+.notification .message.text-only {
+    margin-top: 5px;
+    min-height: 20px;
 }
