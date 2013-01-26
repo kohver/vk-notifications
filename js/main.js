@@ -31,6 +31,58 @@ var Message = Class.extend({
     }
 });
 
+var Templates = {
+    historyMessage:
+    '<div class="photo" title="{{userName}}">' +
+        '<img src="{{userPhoto}}" />' +
+    '</div>' +
+    '<div class="text">' +
+        '{{text}}' +
+    '</div>',
+
+    historyLike:
+    '<div class="text">' +
+        'Поставил еще лайк' +
+    '</div>',
+
+    messageNotification:
+    '<div class="history">' +
+        '<div class="message">' +
+            '<div class="photo" title="{{userName}}">' +
+                '<img src="{{userPhoto}}" />' +
+            '</div>' +
+            '<div class="text">' +
+                '<b>{{userName}}</b><br>' +
+                '{{text}}' +
+            '</div>' +
+        '</div>' +
+    '</div>' +
+    '<div class="textarea-bg">' +
+        '<div class="photo" title="{{viewerName}}">' +
+            '<img src="{{viewerPhoto}}" />' +
+        '</div>' +
+        '<div class="textarea-wrap">' +
+            '<textarea placeholder="Ответить..."></textarea>' +
+        '</div>' +
+    '</div>' +
+    '<div class="close"></div>',
+
+    like: '',
+    likeNotification:
+    '<div class="history">' +
+        '<div class="message">' +
+            '<div class="photo">' +
+                '<img src="{{userPhoto}}" />' +
+            '</div>' +
+            '<div class="text">' +
+                '<b>{{userName}}</b><br>' +
+                'постравил Вам лайк' +
+            '</div>' +
+        '</div>' +
+    '</div>' +
+    '<div class="close"></div>'
+};
+
 (function() {
     window.viewer = new User({
         id: '1',
@@ -212,28 +264,13 @@ var MessageNotification = Notification.extend({
             throw new TypeError('Invalid message');
         }
 
-        t.el.innerHTML =
-            '<div class="history">' +
-                '<div class="message">' +
-                    '<div class="photo" title="' + message.user.name + '">' +
-                        '<img src="' + message.user.photo + '" />' +
-                    '</div>' +
-                    '<div class="text">' +
-                        '<b>' + message.user.name + '</b><br>' +
-                        message.text.replace(/\n/g, '<br>') +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="textarea-bg">' +
-                '<div class="photo" title="' + viewer.name + '">' +
-                    '<img src="' + viewer.photo + '" />' +
-                '</div>' +
-                '<div class="textarea-wrap">' +
-                    '<textarea placeholder="Ответить..."></textarea>' +
-                '</div>' +
-            '</div>' +
-            '<div class="close"></div>' +
-            '';
+        t.el.innerHTML = simpleTemplate(Templates.messageNotification, {
+            userName: message.user.name,
+            userPhoto: message.user.photo,
+            viewerName: viewer.name,
+            viewerPhoto: viewer.photo,
+            text: message.text.replace(/\n/g, '<br>')
+        });
 
         var textarea = geBySelector('textarea', t.el);
         var closeButton = geBySelector('.close', t.el);
@@ -299,14 +336,11 @@ var MessageNotification = Notification.extend({
         var history = geBySelector('.history', t.el);
         var messageElement = ce('div', {
             className: 'message',
-            innerHTML:
-            '<div class="photo" title="' + message.user.name + '">' +
-                '<img src="' + message.user.photo + '" />' +
-            '</div>' +
-            '<div class="text">' +
-                message.text.replace(/\n/g, '<br>') +
-            '</div>' +
-            ''
+            innerHTML: simpleTemplate(Templates.historyMessage, {
+                userPhoto: message.user.photo,
+                userName: message.user.userName,
+                text: message.text.replace(/\n/g, '<br>')
+            })
         }, {
             marginBottom: -40 + 'px'
         });
@@ -334,20 +368,10 @@ var LikeNotification = Notification.extend({
             throw new TypeError('Invalid user');
         }
 
-        t.el.innerHTML =
-            '<div class="history">' +
-                '<div class="message">' +
-                    '<div class="photo">' +
-                        '<img src="' + user.photo + '" />' +
-                    '</div>' +
-                    '<div class="text">' +
-                        '<b>' + user.name + '</b><br>' +
-                        'постравил Вам лайк' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="close"></div>' +
-            '';
+        t.el.innerHTML = simpleTemplate(Templates.likeNotification, {
+            userName: user.name,
+            userPhoto: user.photo
+        });
 
         var closeButton = geBySelector('.close', t.el);
         addClass(t.el, 'like');
@@ -369,11 +393,7 @@ var LikeNotification = Notification.extend({
         var history = geBySelector('.history', t.el);
         var messageElement = ce('div', {
             className: 'message text-only',
-            innerHTML:
-            '<div class="text">' +
-                'Поставил еще лайк' +
-            '</div>' +
-            ''
+            innerHTML: simpleTemplate(Templates.historyLike)
         }, {
             marginBottom: -25 + 'px'
         });

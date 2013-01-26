@@ -116,3 +116,10 @@ function removeClass(obj, name) {
         obj.className = trim((obj.className || '').replace((new RegExp('(\\s|^)' + name + '(\\s|$)')), ' '));
     }
 }
+
+function simpleTemplate(template, object) {
+    object = object || {};
+    return '' + template.replace(/{{\w+}}/g, function(prop) {
+        return object[prop.split('{').join('').split('}').join('')] || {};
+    });
+}
