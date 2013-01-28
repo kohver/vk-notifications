@@ -1,5 +1,5 @@
 Screenshots
 ================
-![screenshot](http://f.cl.ly/items/062V1p1I2M1n2m3y3c1a/First.png)
+![screenshot](http://f.cl.ly/items/3r032V1p0V2q0d2W3m3c/1.png)
 
-![screenshot](http://f.cl.ly/items/1I1e1H1R440Y0G1R173o/Second.png)
+![screenshot](http://f.cl.ly/items/0o3b2Z1T3R3v310t032p/2.png)
