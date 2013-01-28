@@ -412,9 +412,5 @@ var LikeNotification = Notification.extend({
         Animate.popOut(messageElement);
 
         t.setHideTimeout();
-    },
-
-    isActive: function() {
-
     }
 });
