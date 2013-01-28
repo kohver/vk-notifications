@@ -123,3 +123,25 @@ function simpleTemplate(template, object) {
         return object[prop.split('{').join('').split('}').join('')] || '';
     });
 }
+
+Animate = function() {};
+
+Animate.popOut = function(el) {
+    el = ge(el);
+    el.style.marginBottom = -getHeight(el) + 'px';
+    el.style.opacity = 0;
+    el.style.display = 'none';
+    setTimeout(function() {
+        el.style.display = 'block';
+        setTimeout(function() {
+            el.style.opacity = 1;
+            el.style.marginBottom = 0;
+        }, 0);
+    }, 0);
+};
+
+Animate.popIn = function(el) {
+    el = ge(el);
+    el.style.opacity = 0;
+    el.style.marginBottom = -getHeight(el) + 'px';
+};

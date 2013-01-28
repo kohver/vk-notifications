@@ -1,3 +1,99 @@
+function onDomReady() {
+    window.viewer = new User({
+        id: '1',
+        name: 'Павел Дуров',
+        photo: 'http://cs7003.userapi.com/v7003815/22a1/xgG9fb-IJ3Y.jpg'
+    });
+    var defaultUser = new User({
+        id: '4718705',
+        name: 'Артём Кохвер',
+        photo: 'http://cs10308.userapi.com/u4718705/e_be62b8f2.jpg'
+    });
+
+    var lastMessageNotification;
+    var lastLikeNotification;
+    var user;
+    var textarea = ge('textarea');
+    var checkbox = ge('checkbox');
+    textarea.focus();
+
+    addEvent(textarea, 'keydown', function(e) {
+        if (e.keyCode == KEY.ENTER && (e.ctrlKey || e.metaKey)) {
+            sendMessageNotification();
+        }
+    });
+    addEvent('send-button', 'click', function() {
+        sendMessageNotification();
+    });
+    addEvent('like-button', 'click', function() {
+        sendLikeNotification();
+    });
+
+    function sendLikeNotification() {
+        var isNewUser = !!checkbox.checked;
+        if (isNewUser) {
+            user = new User({
+                id: Math.random(),
+                name: 'Случайный Пользователь',
+                photo: 'http://vk.com/images/camera_c.gif'
+            });
+        } else {
+            user = defaultUser;
+        }
+
+        if (lastLikeNotification &&
+            !lastLikeNotification.isHidden &&
+            user.id == lastLikeNotification.options.user.id)
+        {
+            lastLikeNotification.addLike();
+        } else {
+            lastLikeNotification = new LikeNotification({
+                user: user
+            });
+            lastLikeNotification.show();
+        }
+    }
+
+    function sendMessageNotification() {
+        var text = trim(textarea.value);
+        var isNewUser = !!checkbox.checked;
+        if (isNewUser) {
+            user = new User({
+                id: Math.random(),
+                name: 'Случайный Пользователь',
+                photo: 'http://vk.com/images/camera_c.gif'
+            });
+        } else {
+            user = defaultUser;
+        }
+
+        if (text) {
+            var message = new Message({
+                user: user,
+                text: text
+            });
+            if (lastMessageNotification &&
+                !lastMessageNotification.isHidden &&
+                message.user.id == lastMessageNotification.options.message.user.id)
+            {
+                lastMessageNotification.addMessage(message);
+            } else {
+                lastMessageNotification = new MessageNotification({
+                    message: message
+                });
+                lastMessageNotification.show();
+            }
+            textarea.focus();
+
+            setTimeout(function() {
+                textarea.value = '';
+            }, 0);
+        } else {
+            textarea.focus();
+        }
+    }
+}
+
 /**
  * Модель всех пользователей
  * @param options
@@ -31,30 +127,34 @@ var Message = Class.extend({
     }
 });
 
+/**
+ * Шаблоны всех уведомлений
+ */
 var Templates = {
     historyMessage:
     '<div class="photo" title="{{userName}}">' +
         '<img src="{{userPhoto}}" />' +
     '</div>' +
-    '<div class="text">' +
-        '{{text}}' +
-    '</div>',
+    '<div class="name">' +
+        '<a href="http://vk.com/id{{userId}}" target="_blank">{{userName}}</a>' +
+    '</div>' +
+    '<div class="text">{{text}}</div>',
 
     historyLike:
     '<div class="text">' +
-        'Поставил еще лайк' +
+        'Поставил Вам еще лайк' +
     '</div>',
 
     messageNotification:
     '<div class="history">' +
-        '<div class="message">' +
+        '<div class="message not-viewer">' +
             '<div class="photo" title="{{userName}}">' +
                 '<img src="{{userPhoto}}" />' +
             '</div>' +
-            '<div class="text">' +
-                '<b>{{userName}}</b><br>' +
-                '{{text}}' +
+            '<div class="name">' +
+                '<a href="http://vk.com/id{{userId}}" target="_blank">{{userName}}</a>' +
             '</div>' +
+            '<div class="text">{{text}}</div>' +
         '</div>' +
     '</div>' +
     '<div class="textarea-bg">' +
@@ -67,7 +167,6 @@ var Templates = {
     '</div>' +
     '<div class="close"></div>',
 
-    like: '',
     likeNotification:
     '<div class="history">' +
         '<div class="message">' +
@@ -75,104 +174,13 @@ var Templates = {
                 '<img src="{{userPhoto}}" />' +
             '</div>' +
             '<div class="text">' +
-                '<b>{{userName}}</b><br>' +
-                'постравил Вам лайк' +
+                '<b><a href="http://vk.com/id{{userId}}" target="_blank">{{userName}}</a></b><br>' +
+                'Поставил Вам лайк' +
             '</div>' +
         '</div>' +
     '</div>' +
     '<div class="close"></div>'
 };
-
-(function() {
-    window.viewer = new User({
-        id: '1',
-        name: 'Павел Дуров',
-        photo: 'http://cs7003.userapi.com/v7003815/22a1/xgG9fb-IJ3Y.jpg'
-    });
-    var defaultUser = new User({
-        id: '4718705',
-        name: 'Артём Кохвер',
-        photo: 'http://cs10308.userapi.com/u4718705/e_be62b8f2.jpg'
-    });
-
-    var lastMessageNotification;
-    var lastLikeNotification;
-    var user;
-    var textarea = ge('textarea');
-    var checkbox = ge('checkbox');
-    textarea.focus();
-
-    addEvent(textarea, 'keyup', function(e) {
-        if (e.keyCode == KEY.ENTER && (e.ctrlKey || e.metaKey)) {
-            sendMessageNotification();
-        }
-    });
-    addEvent('send-button', 'click', function() {
-        sendMessageNotification();
-    });
-    addEvent('like-button', 'click', function() {
-        sendLikeNotification();
-    });
-
-    function sendLikeNotification() {
-        var isNewUser = !!checkbox.checked;
-        if (isNewUser) {
-            user = new User({
-                id: Math.random(),
-                name: 'Случайный Пользователь',
-                photo: 'http://vk.com/images/camera_c.gif'
-            });
-        } else {
-            user = defaultUser;
-        }
-
-        if (lastLikeNotification &&
-            !lastLikeNotification.isHidden &&
-            user.id == lastLikeNotification.options.user.id)
-        {
-            lastLikeNotification.addLike();
-        } else {
-            lastLikeNotification = new LikeNotification({
-                user: user
-            });
-        }
-    }
-
-    function sendMessageNotification() {
-        var text = trim(textarea.value);
-        var isNewUser = !!checkbox.checked;
-        if (isNewUser) {
-            user = new User({
-                id: Math.random(),
-                name: 'Случайный Пользователь',
-                photo: 'http://vk.com/images/camera_c.gif'
-            });
-        } else {
-            user = defaultUser;
-        }
-
-        if (text) {
-            var message = new Message({
-                user: user,
-                text: text
-            });
-            textarea.value = '';
-            if (lastMessageNotification &&
-                !lastMessageNotification.isHidden &&
-                message.user.id == lastMessageNotification.options.message.user.id)
-            {
-                lastMessageNotification.addMessage(message);
-            } else {
-                lastMessageNotification = new MessageNotification({
-                    message: message
-                });
-            }
-            textarea.focus();
-        } else {
-            textarea.focus();
-        }
-    }
-})();
 
 /**
  * Базовый класс оповещений
@@ -193,7 +201,6 @@ var Notification = Class.extend({
         });
 
         Notification.collection[t.id] = t;
-        t.show();
     },
 
     show: function() {
@@ -201,18 +208,13 @@ var Notification = Class.extend({
         Notification.el.appendChild(t.el);
         t.isHidden = false;
         t.makeElement();
-
-        setTimeout(function() {
-            t.el.style.marginBottom = 0;
-            t.el.style.opacity = 1;
-        }, 0);
+        Animate.popOut(t.el);
     },
 
     hide: function() {
         var t = this;
         t.isHidden = true;
-        t.el.style.opacity = 0;
-        t.el.style.marginBottom = -getHeight(t.el) - 10 + 'px';
+        Animate.popIn(t.el);
         setTimeout(function() {
             t.remove();
         }, 200);
@@ -231,6 +233,7 @@ var Notification = Class.extend({
 
     setHideTimeout: function() {
         var t = this;
+        t.clearHideTimeout();
         t.timeout = setTimeout(function() {
             if (!t.isHidden) {
                 t.hide();
@@ -265,6 +268,7 @@ var MessageNotification = Notification.extend({
         }
 
         t.el.innerHTML = simpleTemplate(Templates.messageNotification, {
+            userId: message.user.id,
             userName: message.user.name,
             userPhoto: message.user.photo,
             viewerName: viewer.name,
@@ -276,8 +280,7 @@ var MessageNotification = Notification.extend({
         var closeButton = geBySelector('.close', t.el);
 
         addEvent(window, 'focus', function() {
-            var text = trim(textarea.value);
-            if (!text && document.activeElement != textarea) {
+            if (!t.isActive()) {
                 t.setHideTimeout();
             }
         });
@@ -302,20 +305,22 @@ var MessageNotification = Notification.extend({
             t.clearHideTimeout();
         });
         addEvent(t.el, 'mouseout', function(e) {
-            var text = trim(textarea.value);
-            if (!text && document.activeElement != textarea) {
+            if (!t.isActive()) {
                 t.setHideTimeout();
             }
         });
-        addEvent(textarea, 'keyup', function(e) {
+        addEvent(textarea, 'keydown', function(e) {
             var text = trim(textarea.value);
             if (e.keyCode == KEY.ENTER) {
-                textarea.value = '';
                 var message = new Message({
                     text: text,
                     user: viewer
                 });
-                t.addMessage(message)
+                t.addMessage(message);
+
+                setTimeout(function() {
+                    textarea.value = '';
+                }, 0);
             } else if (e.keyCode == KEY.ESC) {
                 t.hide();
             }
@@ -324,6 +329,7 @@ var MessageNotification = Notification.extend({
             t.hide();
             e.stopPropagation();
         });
+
         t.setHideTimeout();
     },
 
@@ -335,22 +341,28 @@ var MessageNotification = Notification.extend({
         var t = this;
         var history = geBySelector('.history', t.el);
         var messageElement = ce('div', {
-            className: 'message',
+            className: 'message ' + (viewer.id == message.user.id ? 'viewer' : 'not-viewer'),
             innerHTML: simpleTemplate(Templates.historyMessage, {
+                userId: message.user.id,
+                userName: message.user.name,
                 userPhoto: message.user.photo,
-                userName: message.user.userName,
                 text: message.text.replace(/\n/g, '<br>')
             })
-        }, {
-            marginBottom: -40 + 'px'
         });
         history.appendChild(messageElement);
-        setTimeout(function() {
-            messageElement.style.marginBottom = 0;
-        }, 0);
+        Animate.popOut(messageElement);
 
         t.clearHideTimeout();
-        t.setHideTimeout();
+        if (!t.isActive()) {
+            t.setHideTimeout();
+        }
+    },
+
+    isActive: function() {
+        var t = this;
+        var textarea = geBySelector('textarea', t.el);
+        var text = trim(textarea.value);
+        return text.length || hasClass(t.el, 'active') || document.activeElement == textarea;
     }
 });
 
@@ -369,6 +381,7 @@ var LikeNotification = Notification.extend({
         }
 
         t.el.innerHTML = simpleTemplate(Templates.likeNotification, {
+            userId: user.id,
             userName: user.name,
             userPhoto: user.photo
         });
@@ -394,15 +407,14 @@ var LikeNotification = Notification.extend({
         var messageElement = ce('div', {
             className: 'message text-only',
             innerHTML: simpleTemplate(Templates.historyLike)
-        }, {
-            marginBottom: -25 + 'px'
         });
         history.appendChild(messageElement);
-        setTimeout(function() {
-            messageElement.style.marginBottom = 0;
-        }, 0);
+        Animate.popOut(messageElement);
 
-        t.clearHideTimeout();
         t.setHideTimeout();
+    },
+
+    isActive: function() {
+
     }
 });

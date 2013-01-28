@@ -168,7 +168,7 @@ label {
     max-width: 100%;
 }
 .notification .message + .message {
-    margin-top: 10px;
+    padding-top: 10px;
 }
 .notification .message {
     -webkit-transition: all 0.2s;
@@ -190,6 +190,10 @@ label {
     box-shadow: 0 1px 2px rgba(0,0,0, 0.7);
     max-width: 100%;
 }
+.notification .message .name {
+    font-weight: bold;
+}
+.notification .message .name,
 .notification .message .text {
     margin-left: 40px;
     margin-right: 20px;
@@ -217,7 +221,9 @@ label {
 .notification textarea:-moz-placeholder {
     color: #ccc;
 }
-
+.notification a {
+    color: #B1DAFF;
+}
 .notification .close {
     -webkit-transition: all 0.2s;
     -moz-transition: all 0.2s;
@@ -243,6 +249,7 @@ label {
 .notification.active .message .photo {
     left: 10px;
 }
+.notification.active .message .name,
 .notification.active .message .text,
 .notification.active .textarea-wrap {
     margin-left: 50px;
@@ -251,6 +258,7 @@ label {
     height: 32px;
     background-color: #fff;
     text-shadow: none;
+    line-height: 16px;
 }
 .notification.active textarea::-webkit-input-placeholder {
     color: #777;
@@ -269,7 +277,21 @@ label {
 .notification.like {
     margin-bottom: -60px;
 }
+.notification .message.viewer +
+.message.viewer,
+.notification .message.not-viewer +
+.message.not-viewer,
 .notification .message.text-only {
-    margin-top: 5px;
+    padding-top: 5px;
     min-height: 20px;
+}
+.notification .message.viewer +
+.message.viewer .photo,
+.notification .message.viewer +
+.message.viewer .name,
+.notification .message.not-viewer +
+.message.not-viewer .photo,
+.notification .message.not-viewer +
+.message.not-viewer .name {
+    display: none;
 }
